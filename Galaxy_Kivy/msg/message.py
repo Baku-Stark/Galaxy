@@ -1,3 +1,20 @@
+"""
+    Código para envio de situação APLICAÇÃO PRINCIPAL (message.py)
+
+    ...
+
+    FUNCTIONS
+    ----------
+    message  : str
+            Title App
+
+    success  : str
+            It is working correctly
+
+    error    : function (message:str)
+            It will send the message with the code error
+"""
+
 import os
 
 try:
@@ -19,17 +36,26 @@ def message():
         [blue]| |/ / (_) __ __  _  _ [/blue]
         [blue]| ' <  | | \ V / | || |[/blue]
         [blue]|_|\_\ |_|  \_/   \_, |[/blue]
-        [blue]                |__/[/blue]
+        [blue]                  |__/[/blue]
         """
     )
 
-def sucess():
+def success():
+    """
+        Aplicação funcionando com sucesso!
+    """
+
     status_title = "[ON-MODE]"
     status_message = "[bold green]KIVY[/bold green] application successfully created!"
+    
     rprint(f'[on white] [black] {status_title} [/black] [/on white][on blue] [bold]{status_message}[/bold] [/on blue]')
 
 def error(message: str):
+    """
+        Mensagem com o erro do código.
+    """
+
     status_title = "[ERROR]"
     status_message = f"[bold green]KIVY[/bold green] {message}"
-    rprint(f'[on white] [black] {status_title} [/black] [/on white][on blue] [bold]{status_message}[/bold] [/on blue]')
-    rprint(f'[on white] [black] {status_title} [/black] [/on white][on red] [bold]{status_message}[/bold] [/on red]')
+
+    rprint(f'[on white] [black] {status_title} [/black] [/on white][on purple] [bold]{status_message}[/bold] [/on purple]')
