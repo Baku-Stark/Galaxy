@@ -3,6 +3,9 @@ import os
 # IMPORT [message.py]
 from msg import message
 
+# IMPORT [GalaxyFunctions]
+from GalaxyFunctions.Movement import MovementApp
+
 # ====================== KIVY
 try:
     from kivy.app import App
@@ -15,7 +18,7 @@ except ModuleNotFoundError:
     os.system('python -m pip install "kivy[base]" --pre --extra-index-url https://kivy.org/downloads/simple/')
 # ====================== END OF KIVY
 
-class MainWidget(Widget):
+class MainWidget(Widget, MovementApp):
     """
         Classe dos widgets.
 
@@ -48,6 +51,9 @@ class MainWidget(Widget):
     H_LINES_SPACING = .1
     horizontal_lines = []
 
+    SPEED = 4
+    current_offset_y = 0
+
     def __init__(self, **kwargs):
         super(MainWidget, self).__init__(**kwargs)
         # print(f'INIT\nW: {self.width}\nH: {self.height}')
@@ -68,9 +74,6 @@ class MainWidget(Widget):
 
         # self.perspective_point_x = self.width/2
         # self.perspective_point_y = self.height * 0.75
-
-        self.update_vertical_lines()
-        self.update_horizontal_lines()
 
     def on_perspective_point_x(self, widget, value):
         """
@@ -159,7 +162,7 @@ class MainWidget(Widget):
 
 
         for i in range(0, self.H_NB_LINES):
-            line_y = i * self.H_LINES_SPACING * self.height
+            line_y = i * spacing_y - self.current_offset_y
 
             x1, y1 = self.transform(xmin, line_y)
             x2, y2 = self.transform(xmax, line_y)
