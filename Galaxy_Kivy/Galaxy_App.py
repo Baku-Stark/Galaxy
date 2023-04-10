@@ -15,8 +15,12 @@ try:
     from kivy.graphics.context_instructions import Color
 
     from kivy.config import Config
+    # Tamanho da tela da aplicação
     Config.set('graphics', 'width', '900')
     Config.set('graphics', 'height', '400')
+
+    from kivy.core.window import Window
+    # ATALHOS DO TECLADO NA APLICAÇÃO
 
 except ModuleNotFoundError:
     os.system('python -m pip install "kivy[base]" --pre --extra-index-url https://kivy.org/downloads/simple/')
@@ -55,14 +59,49 @@ class MainWidget(Widget, MovementApp):
     H_LINES_SPACING = .1
     horizontal_lines = []
 
-    current_offset_x = 0
-    current_offset_y = 0
-
     def __init__(self, **kwargs):
         super(MainWidget, self).__init__(**kwargs)
         # print(f'INIT\nW: {self.width}\nH: {self.height}')
         self.init_vertical_lines()
         self.init_horizontal_lines()
+
+        self._keyboard = Window.request_keyboard(self.keyboard_closed, self)
+        self._keyboard.bind(on_key_down=self.on_keyboard_down)
+        self._keyboard.bind(on_key_up=self.on_keyboard_up)
+
+    def keyboard_closed(self):
+        self._keyboard.unbind(on_key_down=self._on_keyboard_down)
+        self._keyboard.unbind(on_key_up=self._on_keyboard_up)
+        self._keyboard = None
+
+    def on_keyboard_down(self, keyboard, keycode, text, modifiers):
+        if keycode[1] == 'left':
+            self.current_speed_x = self.SPEED_X
+
+        elif keycode[1] == 'right':
+            self.current_speed_x = -self.SPEED_X
+        
+        return True
+
+    def on_keyboard_up(self, keyboard, keycode):
+        self.current_speed_x = 0
+        return True
+
+    def on_touch_down(self, touch):
+        """
+            Atalhos de botões (mouse) ESQUERDA e DIREITA
+        """
+        if touch.x < self.width/2:
+            self.current_speed_x = self.SPEED_X
+
+        else:
+            self.current_speed_x = -self.SPEED_X
+
+    def on_touch_up(self, touch):
+        """
+            Atalhos de botões (mouse) CIMA e BAIXO
+        """
+        self.current_speed_x = 0
 
     def on_parent(self, widget, parent):
         # print(f'ON PARENT\nW: {self.width}\nH: {self.height}')

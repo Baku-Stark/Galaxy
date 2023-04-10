@@ -31,7 +31,12 @@ class MovementApp:
     """
 
     SPEED = 4
-    SPEED_X = 3
+    SPEED_X = 12
+
+    current_offset_x = 0
+    current_offset_y = 0
+
+    current_speed_x = 0
 
     def __init__(self):
         # super(MainWidget, self).__init__(**kwargs)
@@ -57,4 +62,4 @@ class MovementApp:
             # GERANDO LINHAS INFINITAS
             self.current_offset_y -= spacing_y
 
-        self.current_offset_x += self.SPEED_X * time_factor
+        self.current_offset_x += self.current_speed_x * time_factor
