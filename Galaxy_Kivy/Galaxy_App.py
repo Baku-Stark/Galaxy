@@ -28,7 +28,21 @@ from msg import message
 from GalaxyFunctions.Movement import MovementApp
 # ====================== END OF IMPORTs
 class PlatformCheck:
+    """
+        Checagem de plataforma da aplicação.
+
+        ...
+
+        FUNCTIONS
+        ----------
+        is_desktop : boolean
+                return True ('linux', 'win', 'macosx') or False
+    """
     def is_desktop(self):
+        """
+            Confirmar checagem com True ou False.
+        """
+        
         return True if platform in ('linux', 'win', 'macosx') else False
 
 class MainWidget(Widget, MovementApp, PlatformCheck):
