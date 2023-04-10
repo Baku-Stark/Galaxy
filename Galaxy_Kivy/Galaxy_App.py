@@ -1,23 +1,18 @@
 import os
 
-# IMPORT [message.py]
-from msg import message
-
-# IMPORT [GalaxyFunctions]
-from GalaxyFunctions.Movement import MovementApp
-
 # ====================== KIVY
 try:
-    from kivy.app import App
-    from kivy.uix.widget import Widget
-    from kivy.properties import NumericProperty
-    from kivy.graphics.vertex_instructions import Line
-    from kivy.graphics.context_instructions import Color
-
     from kivy.config import Config
     # Tamanho da tela da aplicação
     Config.set('graphics', 'width', '900')
     Config.set('graphics', 'height', '400')
+
+    from kivy.app import App
+    from kivy.uix.widget import Widget
+    from kivy import platform
+    from kivy.properties import NumericProperty
+    from kivy.graphics.vertex_instructions import Line
+    from kivy.graphics.context_instructions import Color
 
     from kivy.core.window import Window
     # ATALHOS DO TECLADO NA APLICAÇÃO
@@ -26,7 +21,17 @@ except ModuleNotFoundError:
     os.system('python -m pip install "kivy[base]" --pre --extra-index-url https://kivy.org/downloads/simple/')
 # ====================== END OF KIVY
 
-class MainWidget(Widget, MovementApp):
+# IMPORT [message.py]
+from msg import message
+
+# IMPORT [GalaxyFunctions]
+from GalaxyFunctions.Movement import MovementApp
+# ====================== END OF IMPORTs
+class PlatformCheck:
+    def is_desktop(self):
+        return True if platform in ('linux', 'win', 'macosx') else False
+
+class MainWidget(Widget, MovementApp, PlatformCheck):
     """
         Classe dos widgets.
 
@@ -65,9 +70,10 @@ class MainWidget(Widget, MovementApp):
         self.init_vertical_lines()
         self.init_horizontal_lines()
 
-        self._keyboard = Window.request_keyboard(self.keyboard_closed, self)
-        self._keyboard.bind(on_key_down=self.on_keyboard_down)
-        self._keyboard.bind(on_key_up=self.on_keyboard_up)
+        if self.is_desktop():
+            self._keyboard = Window.request_keyboard(self.keyboard_closed, self)
+            self._keyboard.bind(on_key_down=self.on_keyboard_down)
+            self._keyboard.bind(on_key_up=self.on_keyboard_up)
 
     def keyboard_closed(self):
         self._keyboard.unbind(on_key_down=self._on_keyboard_down)

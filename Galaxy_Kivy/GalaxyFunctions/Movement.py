@@ -42,7 +42,6 @@ class MovementApp:
         # super(MainWidget, self).__init__(**kwargs)
         Clock.schedule_interval(self.update, 1.0 / 60.0)
         
-
     def update(self, dt):
         """
             Atualização para efeito de animação.
