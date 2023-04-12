@@ -1,6 +1,11 @@
 def transform(self, x, y):
     """
-        Transformar as linhas para a perspectiva 2D/3D.
+        Transformar as linhas para a perspectiva.
+
+        RETURN
+        ----------
+        self.transform_2D(x, y) : 2D
+        self.transform_perspective(x, y) : 3D
     """
 
     #return self.transform_2D(x, y)

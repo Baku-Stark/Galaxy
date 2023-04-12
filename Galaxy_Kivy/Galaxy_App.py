@@ -26,6 +26,7 @@ from msg import message
 
 # IMPORT [GalaxyFunctions]
 from GalaxyFunctions.Movement import MovementApp
+from GalaxyFunctions.Movement import CoordinatesApp
 # ====================== END OF IMPORTs
 class PlatformCheck:
     """
@@ -45,7 +46,7 @@ class PlatformCheck:
         
         return True if platform in ('linux', 'win', 'macosx') else False
 
-class MainWidget(Widget, MovementApp, PlatformCheck):
+class MainWidget(Widget, MovementApp, CoordinatesApp, PlatformCheck):
     """
         Classe dos widgets.
 
@@ -76,8 +77,8 @@ class MainWidget(Widget, MovementApp, PlatformCheck):
     perspective_point_x = NumericProperty(0)
     perspective_point_y = NumericProperty(0)
 
-    V_NB_LINES = 10
-    V_LINES_SPACING = .25
+    V_NB_LINES = 4
+    V_LINES_SPACING = .1
     vertical_lines = []
 
     H_NB_LINES = 15
@@ -89,6 +90,7 @@ class MainWidget(Widget, MovementApp, PlatformCheck):
         # print(f'INIT\nW: {self.width}\nH: {self.height}')
         self.init_vertical_lines()
         self.init_horizontal_lines()
+        self.init_tiles()
 
         if self.is_desktop():
             self._keyboard = Window.request_keyboard(self.keyboard_closed, self)
@@ -126,37 +128,29 @@ class MainWidget(Widget, MovementApp, PlatformCheck):
             Atualizar a posição para manter as linhas verticais centralizadas.
         """
         # self.line.points = [center_x, 0, center_x, 100]
+        start_index = -int(self.V_NB_LINES/2) + 1
 
-        center_line_x = int(self.width / 2)
-        spacing = self.V_LINES_SPACING * self.width
-        offset = -int(self.V_NB_LINES/2) + 0.5
-
-        for i in range(0, self.V_NB_LINES):
-            line_x = center_line_x + offset * spacing + self.current_offset_x
+        for i in range(start_index, start_index+self.V_NB_LINES):
+            line_x = self.get_line_x_from_index(i)
 
             x1, y1 = self.transform(line_x, 0)
             x2, y2 = self.transform(line_x, self.height)
 
             self.vertical_lines[i].points = [x1, y1, x2, y2]
 
-            offset += 1
-
     def update_horizontal_lines(self):
         """
             Atualizar a posição para manter as linhas horizontais centralizadas.
         """
 
-        center_line_x = int(self.width / 2)
-        spacing = self.V_LINES_SPACING * self.width
-        offset = int(self.V_NB_LINES/2) - 0.5
+        start_index = -int(self.V_NB_LINES/2) + 1
+        end_index = start_index + self.V_NB_LINES - 1
 
-        xmin = center_line_x - offset * spacing + self.current_offset_x
-        xmax = center_line_x + offset * spacing + self.current_offset_x
-        spacing_y = self.H_LINES_SPACING * self.height
-
+        xmin = self.get_line_x_from_index(start_index)
+        xmax = self.get_line_x_from_index(end_index)
 
         for i in range(0, self.H_NB_LINES):
-            line_y = i * spacing_y - self.current_offset_y
+            line_y = self.get_line_y_from_index(i)
 
             x1, y1 = self.transform(xmin, line_y)
             x2, y2 = self.transform(xmax, line_y)
