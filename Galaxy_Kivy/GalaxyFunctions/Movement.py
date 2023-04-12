@@ -4,6 +4,8 @@
 
 import os
 
+from time import sleep
+
 # ====================== KIVY
 try:
     from kivy.properties import Clock
@@ -22,12 +24,25 @@ class CoordinatesApp:
         FUNCTIONS
         ----------
         get_line_x_from_index : (index)
-                Coordenadas horizontal.
+            Coordenadas horizontal.
+
+        ...
+    
+        VARIABLES
+        ----------
+        NB_TILES : int
+            Números de fitas.
+
+        tiles : list[]
+            Lista com quantidades de fitas.
+
+        tiles_coordinates : list[]
+            Coordenadas das fitas.
     """
 
-    tile = None
-    ti_x = 1
-    ti_y = 2
+    NB_TILES = 8
+    tiles = []
+    tiles_coordinates = []
 
     def get_line_x_from_index(self, index):
         center_line_x = self.perspective_point_x
@@ -44,6 +59,7 @@ class CoordinatesApp:
         return line_y
 
     def get_tile_coordinates(self, ti_x, ti_y):
+        ti_y = ti_y - self.current_y_loop
         x = self.get_line_x_from_index(ti_x)
         y = self.get_line_y_from_index(ti_y)
 
@@ -53,24 +69,36 @@ class CoordinatesApp:
         with self.canvas:
             Color(1, 1, 1)
             
-            self.tile = Quad()
+            for i in range(0, self.NB_TILES):
+                self.tiles.append(Quad())
 
     def update_tiles(self):
-        xmin, ymin = self.get_tile_coordinates(self.ti_x, self.ti_y)
-        xmax, ymax = self.get_tile_coordinates(self.ti_x+1, self.ti_y+1)
+        for i in range(0, self.NB_TILES):
+            tile = self.tiles[i]
 
-        x1, y1 = self.transform(xmin, ymin)
-        x2, y2 = self.transform(xmin, ymax)
-        x3, y3 = self.transform(xmax, ymax)
-        x4, y4 = self.transform(xmax, ymin)
+            tile_coordinates = self.tiles_coordinates[i]
 
-        self.tile.points = [
-            x1, y1,
-            x2, y2,
-            x3, y3,
-            x4, y4
-        ]
+            xmin, ymin = self.get_tile_coordinates(tile_coordinates[0], tile_coordinates[1])
 
+            xmax, ymax = self.get_tile_coordinates(tile_coordinates[0]+1, tile_coordinates[1]+1)
+
+            x1, y1 = self.transform(xmin, ymin)
+            x2, y2 = self.transform(xmin, ymax)
+            x3, y3 = self.transform(xmax, ymax)
+            x4, y4 = self.transform(xmax, ymin)
+
+            tile.points = [
+                x1, y1,
+                x2, y2,
+                x3, y3,
+                x4, y4
+            ]
+
+    def generate_tiles_coordinates(self):
+        for i in range(0, self.NB_TILES):
+            self.tiles_coordinates.append(
+                (0, i)
+            )
 
 class MovementApp:
     """
@@ -90,13 +118,15 @@ class MovementApp:
                 Animação das linhas
     """
 
-    SPEED = 4
+    SPEED = 1
     SPEED_X = 12
 
     current_offset_x = 0
     current_offset_y = 0
 
     current_speed_x = 0
+
+    current_y_loop = 0
 
     def __init__(self):
         # super(MainWidget, self).__init__(**kwargs)
@@ -114,12 +144,14 @@ class MovementApp:
         self.update_horizontal_lines()
         CoordinatesApp.update_tiles(self)
 
-        # self.current_offset_y += self.SPEED * time_factor
+        self.current_offset_y += self.SPEED * time_factor
 
         spacing_y = self.H_LINES_SPACING * self.height
 
         if self.current_offset_y >= spacing_y:
-            # GERANDO LINHAS INFINITAS
+            # GERANDO LINHAS INFINITAS (looping)
             self.current_offset_y -= spacing_y
+            self.current_y_loop += 1
+            print(f'LOOP: {str(self.current_y_loop)}')
 
         # self.current_offset_x += self.current_speed_x * time_factor

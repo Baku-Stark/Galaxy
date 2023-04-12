@@ -90,7 +90,10 @@ class MainWidget(Widget, MovementApp, CoordinatesApp, PlatformCheck):
         # print(f'INIT\nW: {self.width}\nH: {self.height}')
         self.init_vertical_lines()
         self.init_horizontal_lines()
+
+        # class CoordinatesApp
         self.init_tiles()
+        self.generate_tiles_coordinates()
 
         if self.is_desktop():
             self._keyboard = Window.request_keyboard(self.keyboard_closed, self)
