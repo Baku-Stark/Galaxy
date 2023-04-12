@@ -4,8 +4,6 @@
 
 import os
 
-from time import sleep
-
 # ====================== KIVY
 try:
     from kivy.properties import Clock
@@ -40,7 +38,8 @@ class CoordinatesApp:
             Coordenadas das fitas.
     """
 
-    NB_TILES = 8
+    delay = 4
+    NB_TILES = 8 + delay
     tiles = []
     tiles_coordinates = []
 
@@ -95,10 +94,21 @@ class CoordinatesApp:
             ]
 
     def generate_tiles_coordinates(self):
-        for i in range(0, self.NB_TILES):
-            self.tiles_coordinates.append(
-                (0, i)
-            )
+        last_y = 0
+
+        for i in range(len(self.tiles_coordinates)-1, -1, -1):
+            if self.tiles_coordinates[i][1] < self.current_y_loop:
+                del self.tiles_coordinates[i]
+
+        if len(self.tiles_coordinates) > 0:
+            last_coordinates = self.tiles_coordinates[-1]
+            last_y = last_coordinates[1] + 1
+        print('=== Lista deletada')
+
+        for i in range(len(self.tiles_coordinates), self.NB_TILES):
+            self.tiles_coordinates.append((0, last_y))
+            last_y += 1
+        print('=== Novas coordenadas listadas')
 
 class MovementApp:
     """
@@ -140,9 +150,10 @@ class MovementApp:
         # print('update')
         # print(f"dt: {str(dt*60)}")
         time_factor = dt * 60
+        
         self.update_vertical_lines()
         self.update_horizontal_lines()
-        CoordinatesApp.update_tiles(self)
+        self.update_tiles()
 
         self.current_offset_y += self.SPEED * time_factor
 
@@ -152,6 +163,9 @@ class MovementApp:
             # GERANDO LINHAS INFINITAS (looping)
             self.current_offset_y -= spacing_y
             self.current_y_loop += 1
-            print(f'LOOP: {str(self.current_y_loop)}')
+            self.generate_tiles_coordinates()
+
+            if self.current_y_loop >= 5:
+                print(f'LOOP: {str(self.current_y_loop - self.delay)}')
 
         # self.current_offset_x += self.current_speed_x * time_factor
