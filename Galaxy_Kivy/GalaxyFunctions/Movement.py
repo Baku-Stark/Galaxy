@@ -3,6 +3,7 @@
 """
 
 import os
+import random
 
 # ====================== KIVY
 try:
@@ -94,6 +95,7 @@ class CoordinatesApp:
             ]
 
     def generate_tiles_coordinates(self):
+        last_x = 0
         last_y = 0
 
         for i in range(len(self.tiles_coordinates)-1, -1, -1):
@@ -102,13 +104,49 @@ class CoordinatesApp:
 
         if len(self.tiles_coordinates) > 0:
             last_coordinates = self.tiles_coordinates[-1]
+            last_x = last_coordinates[0]
             last_y = last_coordinates[1] + 1
-        print('=== Lista deletada')
-
+    
         for i in range(len(self.tiles_coordinates), self.NB_TILES):
-            self.tiles_coordinates.append((0, last_y))
+            r = random.randint(0, 2)
+            self.tiles_coordinates.append((last_x, last_y))
+
+            # 0 -> straight
+            # 1 -> right
+            # 2 -> left
+
+            start_index = -int(self.V_NB_LINES/2) + 1
+            end_index = start_index + self.V_NB_LINES - 1
+            
+            if last_x <= start_index:
+                r = 1
+
+            if last_x >= end_index:
+                r = 2
+             
+            if r == 1:
+                last_x += 1
+                self.tiles_coordinates.append((last_x, last_y))
+
+                last_y += 1
+                self.tiles_coordinates.append((last_x, last_y))
+
+            if r == 2:
+                last_x -= 1
+                self.tiles_coordinates.append((last_x, last_y))
+
+                last_y += 1
+                self.tiles_coordinates.append((last_x, last_y))
+
             last_y += 1
-        print('=== Novas coordenadas listadas')
+
+    def pre_fill_tiles_coordinates(self):
+        """
+            10 fitas em uma linha reta.
+        """
+
+        for i in range(0, 10):
+            self.tiles_coordinates.append((0, i))
 
 class MovementApp:
     """
@@ -128,7 +166,7 @@ class MovementApp:
                 Animação das linhas
     """
 
-    SPEED = 1
+    SPEED = 4
     SPEED_X = 12
 
     current_offset_x = 0
@@ -165,7 +203,5 @@ class MovementApp:
             self.current_y_loop += 1
             self.generate_tiles_coordinates()
 
-            if self.current_y_loop >= 5:
-                print(f'LOOP: {str(self.current_y_loop - self.delay)}')
-
-        # self.current_offset_x += self.current_speed_x * time_factor
+        # controle do teclado [ativação]
+        self.current_offset_x += self.current_speed_x * time_factor

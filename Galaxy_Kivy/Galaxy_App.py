@@ -77,8 +77,8 @@ class MainWidget(Widget, MovementApp, CoordinatesApp, PlatformCheck):
     perspective_point_x = NumericProperty(0)
     perspective_point_y = NumericProperty(0)
 
-    V_NB_LINES = 4
-    V_LINES_SPACING = .1
+    V_NB_LINES = 8
+    V_LINES_SPACING = .2
     vertical_lines = []
 
     H_NB_LINES = 15
@@ -93,6 +93,7 @@ class MainWidget(Widget, MovementApp, CoordinatesApp, PlatformCheck):
 
         # class CoordinatesApp
         self.init_tiles()
+        self.pre_fill_tiles_coordinates()
         self.generate_tiles_coordinates()
 
         if self.is_desktop():
