@@ -28,6 +28,7 @@ from msg import message
 # IMPORT [GalaxyFunctions]
 from GalaxyFunctions.Movement import MovementApp
 from GalaxyFunctions.Movement import CoordinatesApp
+from GalaxyFunctions.Movement import CollisionsApp
 # ====================== END OF IMPORTs
 class PlatformCheck:
     """
@@ -47,7 +48,7 @@ class PlatformCheck:
         
         return True if platform in ('linux', 'win', 'macosx') else False
 
-class MainWidget(Widget, MovementApp, CoordinatesApp, PlatformCheck):
+class MainWidget(Widget, MovementApp, CoordinatesApp, CollisionsApp, PlatformCheck):
     """
         Classe dos widgets.
 
@@ -90,6 +91,7 @@ class MainWidget(Widget, MovementApp, CoordinatesApp, PlatformCheck):
     SHIP_HEIGHT = 0.050
     SHIP_BASE_Y = 0.04
     ship = None
+    ship_coordinates = []
 
     def __init__(self, **kwargs):
         super(MainWidget, self).__init__(**kwargs)
@@ -122,11 +124,17 @@ class MainWidget(Widget, MovementApp, CoordinatesApp, PlatformCheck):
         base_y = self.SHIP_BASE_Y * self.height
         ship_height = self.SHIP_HEIGHT * self.height
 
-        x1, y1 = self.transform(center_x - ship_half_width, base_y) 
-        
-        x2, y2 = self.transform(center_x, base_y + ship_height)
+        self.ship_coordinates = [
+            (center_x - ship_half_width, base_y),
+            (center_x, base_y + ship_height),
+            (center_x + ship_half_width, base_y)
+        ]
 
-        x3, y3 = self.transform(center_x + ship_half_width, base_y)
+        x1, y1 = self.transform(*self.ship_coordinates[0])
+        
+        x2, y2 = self.transform(*self.ship_coordinates[1])
+
+        x3, y3 = self.transform(*self.ship_coordinates[2])
 
         self.ship.points = [
             x1, y1,

@@ -14,6 +14,48 @@ try:
 except ModuleNotFoundError:
     os.system('python -m pip install "kivy[base]" --pre --extra-index-url https://kivy.org/downloads/simple/')
 # ====================== END OF KIVY
+class CollisionsApp:
+    """
+        Colisões da nave.
+
+        ...
+
+        IMPORTs
+        ----------
+        from kivy.properties import Clock
+        
+        ...
+
+        FUNCTIONS
+        ----------
+        update : (dt)
+                Animação das linhas
+    """
+
+    def check_ship_collision(self):
+        for i in range(0, len(self.tiles_coordinates)):
+            ti_x, ti_y = self.tiles_coordinates[i]
+
+            if ti_y > self.current_y_loop + 1:
+                return False
+            
+            if self.check_ship_collision_with_tile(ti_x, ti_y):
+                return True
+
+        return False
+
+    def check_ship_collision_with_tile(self, ti_x, ti_y):
+        xmin, ymin = self.get_tile_coordinates(ti_x, ti_y)
+        xmax, ymax = self.get_tile_coordinates(ti_x+1, ti_y+1)
+
+        for i in range(0, 3):
+            px, py = self.ship_coordinates[i]
+
+            if xmin <= px <= xmax and ymin <= py <= ymax:
+                return True
+            
+        return False
+            
 class CoordinatesApp:
     """
         Classe de coordenadas do campo.
@@ -223,7 +265,13 @@ class MovementApp:
             self.current_y_loop += 1
             self.generate_tiles_coordinates()
 
+            print(f'LOOP: {self.current_y_loop}')
+
         speed_x = self.current_speed_x * self.width / 100
 
         # controle do teclado [ativação]
         self.current_offset_x += speed_x * time_factor
+
+        # verificar colisão
+        if not self.check_ship_collision():
+            print("Game Over!")
