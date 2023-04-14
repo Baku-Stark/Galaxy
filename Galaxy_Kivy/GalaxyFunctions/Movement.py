@@ -183,8 +183,8 @@ class MovementApp:
                 Animação das linhas
     """
 
-    SPEED = 4
-    SPEED_X = 12
+    SPEED = .8
+    SPEED_X = 3.0
 
     current_offset_x = 0
     current_offset_y = 0
@@ -209,8 +209,11 @@ class MovementApp:
         self.update_vertical_lines()
         self.update_horizontal_lines()
         self.update_tiles()
+        self.update_ship()
 
-        self.current_offset_y += self.SPEED * time_factor
+        speed_y = self.SPEED * self.height / 100
+
+        self.current_offset_y += speed_y * time_factor
 
         spacing_y = self.H_LINES_SPACING * self.height
 
@@ -220,5 +223,7 @@ class MovementApp:
             self.current_y_loop += 1
             self.generate_tiles_coordinates()
 
+        speed_x = self.current_speed_x * self.width / 100
+
         # controle do teclado [ativação]
-        self.current_offset_x += self.current_speed_x * time_factor
+        self.current_offset_x += speed_x * time_factor

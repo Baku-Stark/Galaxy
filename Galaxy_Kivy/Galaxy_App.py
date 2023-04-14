@@ -13,6 +13,7 @@ try:
     from kivy.properties import NumericProperty
     from kivy.graphics.vertex_instructions import Line
     from kivy.graphics.context_instructions import Color
+    from kivy.graphics.vertex_instructions import Triangle
 
     from kivy.core.window import Window
     # ATALHOS DO TECLADO NA APLICAÇÃO
@@ -78,12 +79,17 @@ class MainWidget(Widget, MovementApp, CoordinatesApp, PlatformCheck):
     perspective_point_y = NumericProperty(0)
 
     V_NB_LINES = 8
-    V_LINES_SPACING = .2
+    V_LINES_SPACING = .4
     vertical_lines = []
 
     H_NB_LINES = 15
     H_LINES_SPACING = .1
     horizontal_lines = []
+
+    SHIP_WIDTH = .09
+    SHIP_HEIGHT = 0.050
+    SHIP_BASE_Y = 0.04
+    ship = None
 
     def __init__(self, **kwargs):
         super(MainWidget, self).__init__(**kwargs)
@@ -93,6 +99,9 @@ class MainWidget(Widget, MovementApp, CoordinatesApp, PlatformCheck):
 
         # class CoordinatesApp
         self.init_tiles()
+        # main
+        self.init_ship()
+        # main
         self.pre_fill_tiles_coordinates()
         self.generate_tiles_coordinates()
 
@@ -101,6 +110,30 @@ class MainWidget(Widget, MovementApp, CoordinatesApp, PlatformCheck):
             self._keyboard.bind(on_key_down=self.on_keyboard_down)
             self._keyboard.bind(on_key_up=self.on_keyboard_up)
 
+    def init_ship(self):
+        with self.canvas:
+            Color(0, 0, 0)
+            self.ship = Triangle()
+
+    def update_ship(self):
+        center_x = self.width / 2
+        ship_half_width = self.SHIP_WIDTH * self.width / 2
+        
+        base_y = self.SHIP_BASE_Y * self.height
+        ship_height = self.SHIP_HEIGHT * self.height
+
+        x1, y1 = self.transform(center_x - ship_half_width, base_y) 
+        
+        x2, y2 = self.transform(center_x, base_y + ship_height)
+
+        x3, y3 = self.transform(center_x + ship_half_width, base_y)
+
+        self.ship.points = [
+            x1, y1,
+            x2, y2,
+            x3, y3
+        ]
+    
     def init_vertical_lines(self):
         """
             Gerar linhas na vertical.
