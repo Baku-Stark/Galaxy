@@ -25,6 +25,24 @@ class CoordinatesApp:
         get_line_x_from_index : (index)
             Coordenadas horizontal.
 
+        get_line_y_from_index : (index)
+            Coordenadas vertical.
+
+        get_tile_coordinates : (ti_x, ti_y)
+            Pegar as coordenadas das fitas X e Y
+
+        init_tiles : any
+            Criar uma fita e iniciar o processo de desenvolvimento.
+
+        update_tiles : any
+            Atualizar coordenadas das fitas para preencher o campo.
+
+        generate_tiles_coordinates : any
+            Gerar novas coordenadas para a movimentação do campo.
+
+        pre_fill_tiles_coordinates : any
+            Gerar linhas retas (qtd: 10).
+
         ...
     
         VARIABLES
@@ -40,7 +58,7 @@ class CoordinatesApp:
     """
 
     delay = 4
-    NB_TILES = 8 + delay
+    NB_TILES = 8
     tiles = []
     tiles_coordinates = []
 
@@ -109,8 +127,6 @@ class CoordinatesApp:
     
         for i in range(len(self.tiles_coordinates), self.NB_TILES):
             r = random.randint(0, 2)
-            self.tiles_coordinates.append((last_x, last_y))
-
             # 0 -> straight
             # 1 -> right
             # 2 -> left
@@ -124,6 +140,7 @@ class CoordinatesApp:
             if last_x >= end_index:
                 r = 2
              
+            self.tiles_coordinates.append((last_x, last_y))
             if r == 1:
                 last_x += 1
                 self.tiles_coordinates.append((last_x, last_y))
@@ -145,7 +162,7 @@ class CoordinatesApp:
             10 fitas em uma linha reta.
         """
 
-        for i in range(0, 10):
+        for i in range(0, 14+self.delay):
             self.tiles_coordinates.append((0, i))
 
 class MovementApp:
