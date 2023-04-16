@@ -9,9 +9,10 @@ try:
 
     from kivy.app import App
     from kivy import platform
+    from kivy.lang import Builder
     from kivy.properties import Clock
-    from kivy.uix.widget import Widget
     from kivy.properties import NumericProperty
+    from kivy.uix.relativelayout import RelativeLayout
     from kivy.graphics.vertex_instructions import Line
     from kivy.graphics.context_instructions import Color
     from kivy.graphics.vertex_instructions import Triangle
@@ -31,6 +32,7 @@ from GalaxyFunctions.Movement import MovementApp
 from GalaxyFunctions.Movement import CoordinatesApp
 from GalaxyFunctions.Movement import CollisionsApp
 # ====================== END OF IMPORTs
+Builder.load_file("GalaxyFunctions/Menu.kv")
 class PlatformCheck:
     """
         Checagem de plataforma da aplicação.
@@ -49,7 +51,7 @@ class PlatformCheck:
         
         return True if platform in ('linux', 'win', 'macosx') else False
 
-class MainWidget(Widget, MovementApp, CoordinatesApp, CollisionsApp, PlatformCheck):
+class MainWidget(RelativeLayout, MovementApp, CoordinatesApp, CollisionsApp, PlatformCheck):
     """
         Classe dos widgets.
 
@@ -241,3 +243,6 @@ if __name__ == '__main__':
 
     except (AttributeError) as error:
         message.error(error)
+
+    except KeyboardInterrupt:
+        message.Interrupt()

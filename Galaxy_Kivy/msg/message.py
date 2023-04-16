@@ -59,3 +59,16 @@ def error(message: str):
     status_message = f"[bold green]KIVY[/bold green] {message}"
 
     rprint(f'[on white] [black] {status_title} [/black] [/on white][on purple] [bold]{status_message}[/bold] [/on purple]')
+
+
+def Interrupt():
+    """
+        Mensagem com interrupção do código pelo teclado.
+    """
+
+    message = "B Y E ! ! !"
+
+    status_title = "[KeyboardInterrupt]"
+    status_message = f"[bold green]KIVY[/bold green] {message}"
+
+    rprint(f'[on white] [black] {status_title} [/black] [/on white][on cyan] [bold]{status_message}[/bold] [/on cyan]')

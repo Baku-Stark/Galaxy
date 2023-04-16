@@ -1,5 +1,17 @@
 """
     Movimentos da arena e coordenadas.
+
+    ...
+
+    IMPORTs
+    ----------
+    import os
+
+    import random
+
+    from kivy.graphics.vertex_instructions import Quad
+    
+    from kivy.graphics.context_instructions import Color
 """
 
 import os
@@ -16,12 +28,6 @@ except ModuleNotFoundError:
 class CollisionsApp:
     """
         Colisões da nave.
-
-        ...
-
-        IMPORTs
-        ----------
-        from kivy.properties import Clock
         
         ...
 
