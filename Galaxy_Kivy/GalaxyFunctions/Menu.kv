@@ -8,10 +8,15 @@
             size: self.size
     
     Label:
-        text:'GAME OVER!'
+        text: root.parent.menu_title
         pos_hint: { "center_x": .5, "center_y": .6 }
 
+    Label:
+        text: root.parent.points_game
+        pos_hint: { "center_x": .5, "center_y": .5 }
+        
     Button:
-        text:'OK'
+        text: root.parent.menu_button_title
         pos_hint: { "center_x": .5, "center_y": .4 }
         size_hint: .2,.1
+        on_press: root.parent.on_menu_button_pressed()

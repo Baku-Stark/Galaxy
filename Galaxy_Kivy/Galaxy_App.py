@@ -11,6 +11,8 @@ try:
     from kivy import platform
     from kivy.lang import Builder
     from kivy.properties import Clock
+    from kivy.properties import ObjectProperty
+    from kivy.properties import StringProperty
     from kivy.properties import NumericProperty
     from kivy.uix.relativelayout import RelativeLayout
     from kivy.graphics.vertex_instructions import Line
@@ -102,16 +104,22 @@ class MainWidget(RelativeLayout, MovementApp, CoordinatesApp, CollisionsApp, Pla
     current_offset_y = 0
 
     current_speed_x = 0
-
     current_y_loop = 0
 
     state_game_over = False
+    state_game_has_started = False
+    points_game = StringProperty("---")
+
+    menu_widget = ObjectProperty()
 
     SHIP_WIDTH = .09
     SHIP_HEIGHT = 0.050
     SHIP_BASE_Y = 0.04
     ship = None
     ship_coordinates = []
+
+    menu_title = StringProperty("G   A   L   A   X   Y")
+    menu_button_title = StringProperty("START")
 
     def __init__(self, **kwargs):
         super(MainWidget, self).__init__(**kwargs)
@@ -124,9 +132,8 @@ class MainWidget(RelativeLayout, MovementApp, CoordinatesApp, CollisionsApp, Pla
         self.init_tiles()
         # main
         self.init_ship()
-        # main
-        self.pre_fill_tiles_coordinates()
-        self.generate_tiles_coordinates()
+
+        self.reset_game()
 
         if self.is_desktop():
             self._keyboard = Window.request_keyboard(self.keyboard_closed, self)
@@ -224,6 +231,34 @@ class MainWidget(RelativeLayout, MovementApp, CoordinatesApp, CollisionsApp, Pla
             x2, y2 = self.transform(xmax, line_y)
 
             self.horizontal_lines[i].points = [x1, y1, x2, y2]
+    
+    def on_menu_button_pressed(self):
+        """
+            Iniciar jogo.
+        """
+
+        self.reset_game()
+        self.state_game_has_started = True
+        self.menu_widget.opacity = 0
+
+    def reset_game(self):
+        """
+            Reiniciar jogo.
+        """
+
+        self.current_offset_x = 0
+        self.current_offset_y = 0
+
+        self.current_speed_x = 0
+        self.current_y_loop = 0
+
+        self.tiles_coordinates = []
+        
+        # main
+        self.pre_fill_tiles_coordinates()
+        self.generate_tiles_coordinates()
+        self.state_game_over = False
+
 
 class Galaxy(App):
     """

@@ -239,7 +239,7 @@ class MovementApp:
         self.update_tiles()
         self.update_ship()
 
-        if not self.state_game_over:
+        if not self.state_game_over and self.state_game_has_started:
             speed_y = self.SPEED * self.height / 100
             self.current_offset_y += speed_y * time_factor
 
@@ -249,6 +249,7 @@ class MovementApp:
                 # GERANDO LINHAS INFINITAS (looping)
                 self.current_offset_y -= spacing_y
                 self.current_y_loop += 1
+                self.points_game = str(self.current_y_loop)
                 self.generate_tiles_coordinates()
 
                 print(f'LOOP: {self.current_y_loop}')
@@ -261,4 +262,5 @@ class MovementApp:
         # verificar colisão e GAME OVER
         if not self.check_ship_collision() and not self.state_game_over:
             self.state_game_over = True
+            self.menu_widget.opacity = 1
             print("Game Over!")
