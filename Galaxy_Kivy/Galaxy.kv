@@ -5,9 +5,21 @@
 MainWidget:
 
 <MainWidget>:
+    canvas.before:
+        Rectangle:
+            size: self.size
+            source: 'assets/images/bg1.jpg'
+
     menu_widget: menu_widget
     perspective_point_x: self.width/2
     perspective_point_y: self.height*0.75
+
+    Label:
+        text: root.points_game
+        font_name: 'assets/fonts/Eurostile.ttf'
+        pos_hint: { "x": 0, "top": 1 }
+        size_hint: .18, .18
+        font_size: dp(20)
 
     MenuWidget:
         id: menu_widget

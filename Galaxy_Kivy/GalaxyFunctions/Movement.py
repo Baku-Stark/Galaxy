@@ -249,10 +249,8 @@ class MovementApp:
                 # GERANDO LINHAS INFINITAS (looping)
                 self.current_offset_y -= spacing_y
                 self.current_y_loop += 1
-                self.points_game = str(self.current_y_loop)
+                self.points_game = f"SCORE: {str(self.current_y_loop)}"
                 self.generate_tiles_coordinates()
-
-                print(f'LOOP: {self.current_y_loop}')
 
             speed_x = self.current_speed_x * self.width / 100
 
@@ -261,6 +259,11 @@ class MovementApp:
 
         # verificar colisão e GAME OVER
         if not self.check_ship_collision() and not self.state_game_over:
+            self.sound_music1.stop()
+            self.sound_gameover_impact.play()
+            self.sound_gameover_voice.play()
             self.state_game_over = True
             self.menu_widget.opacity = 1
-            print("Game Over!")
+
+            self.menu_title = "GAME OVER !"
+            self.menu_button_title = "RESTART"

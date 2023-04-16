@@ -11,6 +11,7 @@ try:
     from kivy import platform
     from kivy.lang import Builder
     from kivy.properties import Clock
+    from kivy.core.audio import SoundLoader
     from kivy.properties import ObjectProperty
     from kivy.properties import StringProperty
     from kivy.properties import NumericProperty
@@ -108,7 +109,7 @@ class MainWidget(RelativeLayout, MovementApp, CoordinatesApp, CollisionsApp, Pla
 
     state_game_over = False
     state_game_has_started = False
-    points_game = StringProperty("---")
+    points_game = StringProperty("SCORE: 0")
 
     menu_widget = ObjectProperty()
 
@@ -121,10 +122,17 @@ class MainWidget(RelativeLayout, MovementApp, CoordinatesApp, CollisionsApp, Pla
     menu_title = StringProperty("G   A   L   A   X   Y")
     menu_button_title = StringProperty("START")
 
+    sound_begin = None
+    ssound_galaxy = None
+    sound_gameover_impact = None
+    sound_gameover_voice = None
+    sound_music1 = None
+    sound_restart = None
+
     def __init__(self, **kwargs):
         super(MainWidget, self).__init__(**kwargs)
         # print(f'INIT\nW: {self.width}\nH: {self.height}')
-
+        self.init_audio()
         self.init_vertical_lines()
         self.init_horizontal_lines()
 
@@ -141,6 +149,22 @@ class MainWidget(RelativeLayout, MovementApp, CoordinatesApp, CollisionsApp, Pla
             self._keyboard.bind(on_key_up=self.on_keyboard_up)
 
         Clock.schedule_interval(self.update, 1.0 / 60.0)
+        self.sound_galaxy.play()
+
+    def init_audio(self):
+        self.sound_begin = SoundLoader.load("assets/audio/begin.wav")
+        self.sound_galaxy = SoundLoader.load("assets/audio/galaxy.wav")
+        self.sound_gameover_impact = SoundLoader.load("assets/audio/gameover_impact.wav")
+        self.sound_gameover_voice = SoundLoader.load("assets/audio/gameover_voice.wav")
+        self.sound_music1 = SoundLoader.load("assets/audio/music1.wav")
+        self.sound_restart = SoundLoader.load("assets/audio/restart.wav")
+
+        self.sound_music1.volume = 1
+        self.sound_begin.volume = .25
+        self.sound_galaxy.volume = .25
+        self.sound_gameover_voice.volume = .25
+        self.sound_restart.volume = .25
+        self.sound_gameover_impact.volume = .6
 
     def init_ship(self):
         with self.canvas:
@@ -237,9 +261,19 @@ class MainWidget(RelativeLayout, MovementApp, CoordinatesApp, CollisionsApp, Pla
             Iniciar jogo.
         """
 
+        if self.state_game_over:
+            self.sound_restart.play()
+
+        else:
+            self.sound_begin.play()
+        
+         # init_audio
+        self.sound_music1.play()
+
         self.reset_game()
         self.state_game_has_started = True
         self.menu_widget.opacity = 0
+        
 
     def reset_game(self):
         """
