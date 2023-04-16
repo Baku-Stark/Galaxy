@@ -7,7 +7,6 @@ import random
 
 # ====================== KIVY
 try:
-    from kivy.properties import Clock
     from kivy.graphics.vertex_instructions import Quad
     from kivy.graphics.context_instructions import Color
 
@@ -98,11 +97,6 @@ class CoordinatesApp:
         tiles_coordinates : list[]
             Coordenadas das fitas.
     """
-
-    delay = 4
-    NB_TILES = 8
-    tiles = []
-    tiles_coordinates = []
 
     def get_line_x_from_index(self, index):
         center_line_x = self.perspective_point_x
@@ -204,7 +198,7 @@ class CoordinatesApp:
             10 fitas em uma linha reta.
         """
 
-        for i in range(0, 14+self.delay):
+        for i in range(0, 10+self.delay):
             self.tiles_coordinates.append((0, i))
 
 class MovementApp:
@@ -224,20 +218,6 @@ class MovementApp:
         update : (dt)
                 Animação das linhas
     """
-
-    SPEED = .8
-    SPEED_X = 3.0
-
-    current_offset_x = 0
-    current_offset_y = 0
-
-    current_speed_x = 0
-
-    current_y_loop = 0
-
-    def __init__(self):
-        # super(MainWidget, self).__init__(**kwargs)
-        Clock.schedule_interval(self.update, 1.0 / 60.0)
         
     def update(self, dt):
         """
@@ -253,25 +233,26 @@ class MovementApp:
         self.update_tiles()
         self.update_ship()
 
-        speed_y = self.SPEED * self.height / 100
+        if not self.state_game_over:
+            speed_y = self.SPEED * self.height / 100
+            self.current_offset_y += speed_y * time_factor
 
-        self.current_offset_y += speed_y * time_factor
+            spacing_y = self.H_LINES_SPACING * self.height
 
-        spacing_y = self.H_LINES_SPACING * self.height
+            while self.current_offset_y >= spacing_y:
+                # GERANDO LINHAS INFINITAS (looping)
+                self.current_offset_y -= spacing_y
+                self.current_y_loop += 1
+                self.generate_tiles_coordinates()
 
-        if self.current_offset_y >= spacing_y:
-            # GERANDO LINHAS INFINITAS (looping)
-            self.current_offset_y -= spacing_y
-            self.current_y_loop += 1
-            self.generate_tiles_coordinates()
+                print(f'LOOP: {self.current_y_loop}')
 
-            print(f'LOOP: {self.current_y_loop}')
+            speed_x = self.current_speed_x * self.width / 100
 
-        speed_x = self.current_speed_x * self.width / 100
+            # controle do teclado [ativação]
+            self.current_offset_x += speed_x * time_factor
 
-        # controle do teclado [ativação]
-        self.current_offset_x += speed_x * time_factor
-
-        # verificar colisão
-        if not self.check_ship_collision():
+        # verificar colisão e GAME OVER
+        if not self.check_ship_collision() and not self.state_game_over:
+            self.state_game_over = True
             print("Game Over!")

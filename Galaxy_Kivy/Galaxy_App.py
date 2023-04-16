@@ -8,8 +8,9 @@ try:
     Config.set('graphics', 'height', '400')
 
     from kivy.app import App
-    from kivy.uix.widget import Widget
     from kivy import platform
+    from kivy.properties import Clock
+    from kivy.uix.widget import Widget
     from kivy.properties import NumericProperty
     from kivy.graphics.vertex_instructions import Line
     from kivy.graphics.context_instructions import Color
@@ -87,6 +88,23 @@ class MainWidget(Widget, MovementApp, CoordinatesApp, CollisionsApp, PlatformChe
     H_LINES_SPACING = .1
     horizontal_lines = []
 
+    delay = 4
+    NB_TILES = 8 + 4
+    tiles = []
+    tiles_coordinates = []
+
+    SPEED = .8
+    SPEED_X = 3.0
+
+    current_offset_x = 0
+    current_offset_y = 0
+
+    current_speed_x = 0
+
+    current_y_loop = 0
+
+    state_game_over = False
+
     SHIP_WIDTH = .09
     SHIP_HEIGHT = 0.050
     SHIP_BASE_Y = 0.04
@@ -96,6 +114,7 @@ class MainWidget(Widget, MovementApp, CoordinatesApp, CollisionsApp, PlatformChe
     def __init__(self, **kwargs):
         super(MainWidget, self).__init__(**kwargs)
         # print(f'INIT\nW: {self.width}\nH: {self.height}')
+
         self.init_vertical_lines()
         self.init_horizontal_lines()
 
@@ -111,6 +130,8 @@ class MainWidget(Widget, MovementApp, CoordinatesApp, CollisionsApp, PlatformChe
             self._keyboard = Window.request_keyboard(self.keyboard_closed, self)
             self._keyboard.bind(on_key_down=self.on_keyboard_down)
             self._keyboard.bind(on_key_up=self.on_keyboard_up)
+
+        Clock.schedule_interval(self.update, 1.0 / 60.0)
 
     def init_ship(self):
         with self.canvas:
